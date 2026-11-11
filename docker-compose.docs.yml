@@ -1,0 +1,17 @@
+services:
+  docs:
+    image: acca_compta_local_docs
+    container_name: acca_compta_local_docs
+    build:
+      context: .
+      dockerfile: ./compose/local/docs/Dockerfile
+    env_file:
+      - path: ./.envs/.local/.django
+        required: false
+    volumes:
+      - ./docs:/docs:z
+      - ./config:/app/config:z
+      - ./acca_compta:/app/acca_compta:z
+    ports:
+      - '9000:9000'
+    command: /start-docs
