@@ -33,8 +33,8 @@
     {% block javascript %}
       <!-- Bootstrap JS -->
       <script defer
-              src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/js/bootstrap.min.js"
-              integrity="sha512-1/RvZTcCDEUjY/CypiMz+iqqtaoQfAITmNSJY17Myp4Ms5mdxPS5UV7iOfdZoxcGhzFbOm6sntTKJppjvuhg4g=="
+              src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+              integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
               crossorigin="anonymous"
               referrerpolicy="no-referrer"></script>
       <!-- Your stuff: Third-party javascript libraries go here -->
@@ -59,30 +59,24 @@
             <a class="navbar-brand" href="{% url 'home' %}">acca-compta</a>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                  <a class="nav-link" href="{% url 'home' %}">Home <span class="visually-hidden">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'about' %}">About</a>
+                <li class="nav-item dropdown">
+                  <a id="journal_dropdown_id"
+                     class="nav-link dropdown-toggle"
+                     href="#"
+                     role="button"
+                     data-bs-toggle="dropdown"
+                     aria-expanded="false">Journal</a>
+                  <ul class="dropdown-menu" aria-labelledby="journal_dropdown_id">
+                    <li><a class="dropdown-item"
+                           href="{% url 'journal_comptable:consulter' %}">Consulter le journal</a></li>
+                  </ul>
                 </li>
                 {% if request.user.is_authenticated %}
-                  <li class="nav-item">
-                    <a class="nav-link"
-                       href="{% url 'users:detail' request.user.pk %}">{% translate "My Profile" %}</a>
-                  </li>
                   <li class="nav-item">
                     {# URL provided by django-allauth/account/urls.py #}
                     <a class="nav-link" href="{% url 'account_logout' %}">{% translate "Sign Out" %}</a>
                   </li>
                 {% else %}
-                  {% if ACCOUNT_ALLOW_REGISTRATION %}
-                    <li class="nav-item">
-                      {# URL provided by django-allauth/account/urls.py #}
-                      <a id="sign-up-link"
-                         class="nav-link"
-                         href="{% url 'account_signup' %}">{% translate "Sign Up" %}</a>
-                    </li>
-                  {% endif %}
                   <li class="nav-item">
                     {# URL provided by django-allauth/account/urls.py #}
                     <a id="log-in-link" class="nav-link" href="{% url 'account_login' %}">{% translate "Sign In" %}</a>
@@ -107,7 +101,6 @@
         {% endif %}
         {% block main %}
           {% block content %}
-            <p>Use this document as a way to quick start any new project.</p>
           {% endblock content %}
         {% endblock main %}
       </div>

@@ -1,0 +1,13 @@
+{
+    "cSpell.language": "en, \"fr-FR\"",
+    "cSpell.words": [
+        "acca",
+        "ACCA",
+        "categorie"
+    ],
+    "python.testing.pytestArgs": [
+        "acca_compta"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
+}

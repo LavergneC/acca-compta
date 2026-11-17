@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}
+  Consulter le journal
+{% endblock title %}
+{% block content %}
+  <h1 class="h1">Journal Comptable</h1>
+  <table id="id_journal_table" class="acca_table">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Compte</th>
+        <th>Categorie</th>
+        <th class="text-end">Montant</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for ligne in lignes %}
+        <tr id="id_ligne_{{ forloop.counter }}">
+          <td id="id_date_{{ forloop.counter }}">{{ ligne.date|date:"d/m/Y" }}</td>
+          <td id="id_compte_{{ forloop.counter }}">{{ ligne.compte }}</td>
+          <td id="id_categorie_{{ forloop.counter }}">{{ ligne.categorie }}</td>
+          <td id="id_montant_{{ forloop.counter }}"
+              class="text-end">{% if ligne.montant > 0 %}+{% endif %}{{ ligne.montant|floatformat:2 }} €</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock content %}
