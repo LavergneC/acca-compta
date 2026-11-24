@@ -1,0 +1,39 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Python Debugger: Django",
+      "type": "debugpy",
+      "request": "launch",
+      "args": ["runserver"],
+      "django": true,
+      "autoStartBrowser": false,
+      "program": "${workspaceFolder}/manage.py"
+    },
+    {
+      "name": "All code Python Debugger",
+      "type": "debugpy",
+      "purpose": ["debug-test"],
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal",
+      "justMyCode": false
+    },
+    {
+      "name": "functional tests",
+      "type": "debugpy",
+      "request": "launch",
+      "args": ["test", "functional_tests.${input:functional_test_name}"],
+      "django": true,
+      "autoStartBrowser": false,
+      "program": "${workspaceFolder}/manage.py"
+    }
+  ],
+  "inputs": [
+    {
+      "id": "functional_test_name",
+      "type": "promptString",
+      "description": "Enter the test name (e.g., test_detailed_folders_list.DisplayDetailedFoldersList.test_modify_folder_state)"
+    }
+  ]
+}
