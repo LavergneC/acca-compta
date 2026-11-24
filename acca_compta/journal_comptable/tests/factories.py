@@ -27,11 +27,16 @@ def create_ligne(
     categorie: Categorie | None = None,
     montant: float | None = None,
 ) -> Ligne:
+    if categorie is None:
+        meta_categorie, _ = MetaCategorie.objects.get_or_create(nom="Deck")
+        categorie, _ = Categorie.objects.get_or_create(
+            meta_categorie=meta_categorie,
+            nom="Carte",
+        )
+
     return Ligne.objects.create(
         date=date if date is not None else dt.date(2026, 9, 29),
         compte=compte if compte is not None else create_compte(nom="Credit"),
-        categorie=categorie
-        if categorie is not None
-        else create_categorie(meta_categorie="Deck", nom="Carte"),
+        categorie=categorie,
         montant=montant if montant is not None else 123.45,
     )

@@ -1,4 +1,5 @@
 import datetime as dt
+from http import HTTPStatus
 
 import pytest
 from django.urls import reverse
@@ -7,11 +8,6 @@ from acca_compta.journal_comptable.models import Ligne
 from acca_compta.journal_comptable.tests.factories import create_categorie
 from acca_compta.journal_comptable.tests.factories import create_compte
 from acca_compta.journal_comptable.tests.factories import create_ligne
-
-
-class StatusCode:
-    OK = 200
-
 
 pytestmark = pytest.mark.django_db
 
@@ -40,7 +36,7 @@ class TestConsulterJournalView:
 
     def test_access_consulter_journal(self, client, url: str):
         response = client.get(url)
-        assert response.status_code == StatusCode.OK
+        assert response.status_code == HTTPStatus.OK
 
     def test_consulter_journal_render_correct_template(self, client, url: str):
         response = client.get(url)

@@ -16,6 +16,7 @@
           content="Projet pour la gestion simple de la compta des ACCA" />
     <meta name="author" content="Lavergne Clement" />
     <link rel="icon" href="{% static 'images/favicons/favicon.ico' %}" />
+    <script src="https://unpkg.com/htmx.org@2.0.11"></script>
     {% block css %}
       <!-- Latest compiled and minified Bootstrap CSS -->
       <link rel="stylesheet"
@@ -26,6 +27,8 @@
       <!-- Your stuff: Third-party CSS libraries go here -->
       <!-- This file stores project-specific CSS -->
       <link href="{% static 'css/project.css' %}" rel="stylesheet" />
+      <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     {% endblock css %}
     <!-- Le javascript
     ================================================== -->
@@ -41,6 +44,8 @@
       <!-- place project specific Javascript in this file -->
       <script defer src="{% static 'js/project.js' %}"></script>
     {% endblock javascript %}
+    <script src="{% static 'htmx.min.js' %}" defer></script>
+    <script src="{% static 'toasts.js' %}" defer></script>
   </head>
   <body class="{% block bodyclass %}{% endblock bodyclass %}">
     {% block body %}
@@ -68,7 +73,7 @@
                      aria-expanded="false">Journal</a>
                   <ul class="dropdown-menu" aria-labelledby="journal_dropdown_id">
                     <li><a class="dropdown-item"
-                           href="{% url 'journal_comptable:consulter' %}">Consulter le journal</a></li>
+                           href="{% url 'journal_comptable:consulter' %}">Journal comptable</a></li>
                   </ul>
                 </li>
                 {% if request.user.is_authenticated %}
@@ -88,17 +93,7 @@
         </nav>
       </div>
       <div class="container">
-        {% if messages %}
-          {% for message in messages %}
-            <div class="alert alert-dismissible {% if message.tags %}alert-{{ message.tags }}{% endif %}">
-              {{ message }}
-              <button type="button"
-                      class="btn-close"
-                      data-bs-dismiss="alert"
-                      aria-label="Close"></button>
-            </div>
-          {% endfor %}
-        {% endif %}
+        {% include "toasts.html" %}
         {% block main %}
           {% block content %}
           {% endblock content %}

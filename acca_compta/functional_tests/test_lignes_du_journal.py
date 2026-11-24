@@ -2,6 +2,7 @@ import datetime as dt
 
 from functional_tests.base import FunctionalTest
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.select import Select
 
 from acca_compta.journal_comptable.tests.factories import create_categorie
 from acca_compta.journal_comptable.tests.factories import create_compte
@@ -24,6 +25,8 @@ class LignesDuJournal(FunctionalTest):
             categorie=create_categorie(meta_categorie="Intérêts", nom="Livret A"),
             montant=260.00,
         )
+        create_categorie(meta_categorie="Frais généraux", nom="Papeterie")
+        create_compte("Caisse")
 
     def test_consulter_journal(self):
         # Depuis la page de garde
@@ -32,8 +35,8 @@ class LignesDuJournal(FunctionalTest):
 
         # L'utilisateur utilise le menu pour accéder à la lecture du
         self.browser.find_element(By.ID, "journal_dropdown_id").click()
-        self.browser.find_element(By.LINK_TEXT, "Consulter le journal").click()
-        self.wait_for_page("Consulter le journal")
+        self.browser.find_element(By.LINK_TEXT, "Journal comptable").click()
+        self.wait_for_page("Journal comptable")
 
         # Les informations de la BDD sont correctement affichées
         ligne1 = self.browser.find_element(By.ID, "id_ligne_1")
@@ -58,43 +61,44 @@ class LignesDuJournal(FunctionalTest):
         self.browser.get(self.live_server_url)
         self.wait_for_page("ACCA Compta")
 
-        # L'utilisateur utilise le menu pour accéder à l'ajout de recette
+        # L'utilisateur utilise le menu pour accéder au journal
         self.browser.find_element(By.ID, "journal_dropdown_id").click()
-        self.browser.find_element(By.LINK_TEXT, "Ajouter une recette").click()
+        self.browser.find_element(By.LINK_TEXT, "Journal comptable").click()
+        self.wait_for_page("Journal comptable")
 
-        self.wait_for_page("Ajouter une recette")
+        # Il clique sur le bouton d'ajout de ligne
+        self.browser.find_element(By.ID, "id_ajouter-ligne-button").click()
+        form = self.wait_for_element("id_form-nouvelle-ligne")
 
-        form = self.browser.find_element(By.ID, "id_ajouter_recette")
+        # L'utilisateur sélectionne le compte
+        compte_selection = Select(form.find_element(By.ID, "id_compte"))
+        compte_selection.select_by_visible_text("Caisse")
 
-        # L'utilisateur sélectionne le compte "caisse"
-        form.find_element(By.ID, "id_compte").click()
-        form.find_element(By.XPATH, f"//option[. = '{'Caisse'}']").click()
+        # Sélectionne la meta-catégorie
+        meta_categorie = Select(form.find_element(By.ID, "id_meta_categorie"))
+        meta_categorie.select_by_visible_text("Frais généraux")
 
-        # Sélectionne la meta-catégorie "Frais généraux"
-        form.find_element(By.ID, "id_meta_categorie").click()
-        form.find_element(By.XPATH, f"//option[. = '{'Frais généraux'}']").click()
-
-        # Sélectionne la catégorie "Papeterie"
-        form.find_element(By.ID, "id_categorie").click()
-        form.find_element(By.XPATH, f"//option[. = '{'Papeterie'}']").click()
+        # Sélectionne la catégorie
+        categorie = Select(form.find_element(By.ID, "id_categorie"))
+        categorie.select_by_visible_text("Frais généraux - Papeterie")
 
         # Sélectionne la date
         date_element = self.browser.find_element(By.ID, "id_date")
         date_element.send_keys("2026-07-15")
 
-        # Ajoute le montant de 10€50
+        # Ajoute le montant de -10€50
         montant_element = self.browser.find_element(By.ID, "id_montant")
-        montant_element.send_keys("10.50")
+        montant_element.send_keys("-10.50")
 
         # Valide l'ajout
-        self.browser.find_element(By.ID, "id_valider").click()
+        self.browser.find_element(By.ID, "id_form-submit-button").click()
 
         # Un message de succès s'affiche
         self.wait_for_message("Ligne comptable ajoutée")
 
         # L'utilisateur va voir son ajout dans le journal comptable
         # depuis l'url
-        self.browser.get(self.live_server_url + "/journal/consulter")
+        self.browser.get(self.live_server_url + "/journal_comptable/consulter")
         self.wait_for_page("Journal comptable")
 
         # Il repère la ligne qu'il vient d'ajouter

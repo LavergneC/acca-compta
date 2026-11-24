@@ -3,7 +3,8 @@
     "cSpell.words": [
         "acca",
         "ACCA",
-        "categorie"
+        "categorie",
+        "getfixturevalue"
     ],
     "python.testing.pytestArgs": [
         "acca_compta"

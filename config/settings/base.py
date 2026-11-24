@@ -95,12 +95,14 @@ THIRD_PARTY_APPS = [
     "rest_framework.authtoken",
     "corsheaders",
     "drf_spectacular",
+    "django_htmx_messages",
 ]
 
 LOCAL_APPS = [
     "acca_compta.users",
     "acca_compta.journal_comptable",
     # Your stuff: custom apps go here
+    "django_htmx",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -159,6 +161,8 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
+    "django_htmx.middleware.HtmxMiddleware",
+    "django_htmx_messages.middleware.HtmxMessageMiddleware",
 ]
 
 # STATIC

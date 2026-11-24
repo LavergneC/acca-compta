@@ -3,10 +3,23 @@
 {% load static %}
 
 {% block title %}
-  Consulter le journal
+  Journal comptable
 {% endblock title %}
 {% block content %}
   <h1 class="h1">Journal Comptable</h1>
+  <div style="text-align: left; margin-top: 10px;">
+    ""
+    <button id="id_ajouter-ligne-button"
+            type="button"
+            class="btn btn-success"
+            hx-get="{% url 'journal_comptable:edit_nouvelle_ligne' %}"
+            hx-target="#id_lignes"
+            hx-swap="beforebegin">
+      <i class="fa fa-plus" aria-hidden="true"></i>
+      Ajouter une ligne
+    </button>
+  </div>
+  <br />
   <table id="id_journal_table" class="acca_table">
     <thead>
       <tr>
@@ -14,9 +27,10 @@
         <th>Compte</th>
         <th>Categorie</th>
         <th class="text-end">Montant</th>
+        <th class="text-end">Actions</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody id="id_lignes">
       {% for ligne in lignes %}
         <tr id="id_ligne_{{ forloop.counter }}">
           <td id="id_date_{{ forloop.counter }}">{{ ligne.date|date:"d/m/Y" }}</td>
@@ -24,6 +38,7 @@
           <td id="id_categorie_{{ forloop.counter }}">{{ ligne.categorie }}</td>
           <td id="id_montant_{{ forloop.counter }}"
               class="text-end">{% if ligne.montant > 0 %}+{% endif %}{{ ligne.montant|floatformat:2 }} €</td>
+          <td></td>
         </tr>
       {% endfor %}
     </tbody>

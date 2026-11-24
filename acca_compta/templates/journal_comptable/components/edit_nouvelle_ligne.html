@@ -1,0 +1,29 @@
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+<tr id="id_form-nouvelle-ligne">
+  {% csrf_token %}
+  <td>{{ form.date | as_crispy_field }}</td>
+  <td>{{ form.compte | as_crispy_field }}</td>
+  <td>{{ form.meta_categorie | as_crispy_field }} {{ form.categorie | as_crispy_field }}</td>
+  <td>{{ form.montant | as_crispy_field }}</td>
+  <td class="center-align">
+    <a id="id_form-cancel-button"
+       class="btn-circle"
+       hx-get="{% url 'journal_comptable:cancel_edit_nouvelle_ligne' %}"
+       hx-target="closest tr"
+       hx-swap="outerHTML"
+       title="Annuler">
+      <i class="fa fa-times"></i>
+    </a>
+    <a id="id_form-submit-button"
+       class="btn-circle"
+       hx-post="{% url 'journal_comptable:submit_nouvelle_ligne' %}"
+       hx-include="closest tr"
+       hx-target="closest tr"
+       hx-swap="outerHTML"
+       title="Sauvegarder">
+      <i class="fa fa-check"></i>
+    </a>
+  </td>
+</tr>

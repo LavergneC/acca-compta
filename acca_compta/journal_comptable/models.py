@@ -2,14 +2,14 @@ from django.db import models
 
 
 class MetaCategorie(models.Model):
-    nom = models.CharField()
+    nom = models.CharField(unique=True)
 
     def __str__(self) -> str:
         return self.nom
 
 
 class Categorie(models.Model):
-    nom = models.CharField()
+    nom = models.CharField(unique=True)
     meta_categorie = models.ForeignKey(
         "journal_comptable.MetaCategorie",
         on_delete=models.CASCADE,
