@@ -13,7 +13,7 @@
             class="btn btn-success"
             hx-get="{% url 'journal_comptable:edit_nouvelle_ligne' %}"
             hx-target="#id_lignes"
-            hx-swap="beforebegin">
+            hx-swap="afterbegin">
       <i class="fa fa-plus" aria-hidden="true"></i>
       Ajouter une ligne
     </button>
@@ -31,14 +31,7 @@
     </thead>
     <tbody id="id_lignes">
       {% for ligne in lignes %}
-        <tr id="id_ligne_{{ forloop.counter }}">
-          <td id="id_date_{{ forloop.counter }}">{{ ligne.date|date:"d/m/Y" }}</td>
-          <td id="id_compte_{{ forloop.counter }}">{{ ligne.compte }}</td>
-          <td id="id_categorie_{{ forloop.counter }}">{{ ligne.categorie }}</td>
-          <td id="id_montant_{{ forloop.counter }}"
-              class="text-end">{% if ligne.montant > 0 %}+{% endif %}{{ ligne.montant|floatformat:2 }} €</td>
-          <td></td>
-        </tr>
+        {% include "journal_comptable/components/text_ligne.html" with ligne=ligne %}
       {% endfor %}
     </tbody>
   </table>

@@ -4,6 +4,7 @@ from functional_tests.base import FunctionalTest
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
 
+from acca_compta.journal_comptable.models import Ligne
 from acca_compta.journal_comptable.tests.factories import create_categorie
 from acca_compta.journal_comptable.tests.factories import create_compte
 from acca_compta.journal_comptable.tests.factories import create_ligne
@@ -107,13 +108,14 @@ class LignesDuJournal(FunctionalTest):
         self.wait_for_page("Journal comptable")
 
         # Il repère la ligne qu'il vient d'ajouter
-        ligne1 = self.browser.find_element(By.ID, "id_ligne_1")
+        new_id = Ligne.objects.last().pk
+        ligne1 = self.browser.find_element(By.ID, f"id_ligne_{new_id}")
 
         # Les informations correspondent
-        assert ligne1.find_element(By.ID, "id_date_1").text == "15/07/2026"
-        assert ligne1.find_element(By.ID, "id_compte_1").text == "Caisse"
+        assert ligne1.find_element(By.ID, f"id_date_{new_id}").text == "15/07/2026"
+        assert ligne1.find_element(By.ID, f"id_compte_{new_id}").text == "Caisse"
         assert (
-            ligne1.find_element(By.ID, "id_categorie_1").text
+            ligne1.find_element(By.ID, f"id_categorie_{new_id}").text
             == "Frais généraux - Papeterie"
         )
-        assert ligne1.find_element(By.ID, "id_montant_1").text == "-10.50 €"
+        assert ligne1.find_element(By.ID, f"id_montant_{new_id}").text == "-10.50 €"
