@@ -35,8 +35,7 @@ class LignesDuJournal(FunctionalTest):
         self.wait_for_page("ACCA Compta")
 
         # L'utilisateur utilise le menu pour accéder à la lecture du
-        self.browser.find_element(By.ID, "journal_dropdown_id").click()
-        self.browser.find_element(By.LINK_TEXT, "Journal comptable").click()
+        self.browser.find_element(By.LINK_TEXT, "Journal Comptable").click()
         self.wait_for_page("Journal comptable")
 
         # Les informations de la BDD sont correctement affichées
@@ -63,8 +62,7 @@ class LignesDuJournal(FunctionalTest):
         self.wait_for_page("ACCA Compta")
 
         # L'utilisateur utilise le menu pour accéder au journal
-        self.browser.find_element(By.ID, "journal_dropdown_id").click()
-        self.browser.find_element(By.LINK_TEXT, "Journal comptable").click()
+        self.browser.find_element(By.LINK_TEXT, "Journal Comptable").click()
         self.wait_for_page("Journal comptable")
 
         # Il clique sur le bouton d'ajout de ligne

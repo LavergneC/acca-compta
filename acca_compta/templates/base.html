@@ -64,17 +64,8 @@
             <a class="navbar-brand" href="{% url 'home' %}">acca-compta</a>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="navbar-nav mr-auto">
-                <li class="nav-item dropdown">
-                  <a id="journal_dropdown_id"
-                     class="nav-link dropdown-toggle"
-                     href="#"
-                     role="button"
-                     data-bs-toggle="dropdown"
-                     aria-expanded="false">Journal</a>
-                  <ul class="dropdown-menu" aria-labelledby="journal_dropdown_id">
-                    <li><a class="dropdown-item"
-                           href="{% url 'journal_comptable:consulter' %}">Journal comptable</a></li>
-                  </ul>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'journal_comptable:consulter' %}">Journal Comptable</a>
                 </li>
                 {% if request.user.is_authenticated %}
                   <li class="nav-item">
