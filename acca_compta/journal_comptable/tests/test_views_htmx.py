@@ -70,6 +70,18 @@ class TestEditNouvelleLigneView:
         response = client.htmx_get(url)
         assert f'hx-get="{expected_url}"' in response.content.decode()
 
+    def test_meta_categorie_fait_un_post_htmx_sur_submit_half_nouvelle_ligne(
+        self,
+        url: str,
+        client: HtmxClient,
+    ):
+        response = client.htmx_get(url)
+
+        expected_url = reverse("journal_comptable:submit_half_nouvelle_ligne")
+        assert f'hx-post="{expected_url}"' in response.content.decode(), (
+            f"Expected '{expected_url}' in response"
+        )
+
 
 class TestCancelEditNouvelleLigne:
     @pytest.fixture
@@ -95,6 +107,64 @@ class TestCancelEditNouvelleLigne:
     def test_returned_html_content_is_blank(self, client: HtmxClient, url: str):
         response = client.htmx_get(url)
         assert response.content.decode("utf-8") == ""
+
+
+class TestHalfSubmitNouvelleLigne:
+    @pytest.fixture
+    def client(self):
+        return HtmxClient()
+
+    @pytest.fixture
+    def url(self) -> str:
+        return reverse("journal_comptable:submit_half_nouvelle_ligne")
+
+    @pytest.fixture
+    def half_data(self) -> dict:
+        self.categorie = create_categorie("Achat", "Cartouche d'encre")
+        self.compte = create_compte("Courant")
+
+        return {
+            "date": "2026-11-17",
+            "compte": self.compte.pk,
+            "meta_categorie": self.categorie.meta_categorie.pk,
+            "montant": -123.45,
+        }
+
+    def test_access_view_with_htmx_post(
+        self,
+        client: HtmxClient,
+        url: str,
+        half_data: dict,
+    ):
+        response = client.htmx_post(url, data=half_data)
+        assert response.status_code == HTTPStatus.OK
+
+    def test_cant_access_view_with_normal_post(self, client: HtmxClient, url: str):
+        response = client.post(url, data={})
+        assert response.status_code == HTTPStatus.FORBIDDEN
+
+    def test_cant_get_with_htmx(self, client: HtmxClient, url: str):
+        response = client.htmx_get(url)
+        assert response.status_code == HTTPStatus.METHOD_NOT_ALLOWED
+
+    def test_post_return_filled_edit_nouvelle_ligne_htmx_view(
+        self,
+        client: HtmxClient,
+        url: str,
+        half_data: dict,
+    ):
+        response = client.htmx_post(url, data=half_data)
+        assert response.status_code == HTTPStatus.OK
+        assert "journal_comptable/components/edit_nouvelle_ligne.html" in [
+            t.name for t in response.templates
+        ]
+        assert response.context["form"]["compte"].value() == str(self.compte.pk)
+        assert response.context["form"]["date"].value() == "2026-11-17"
+        assert response.context["form"]["meta_categorie"].value() == str(
+            self.categorie.meta_categorie.pk,
+        )
+
+        assert response.context["form"]["montant"].value() == "-123.45"
 
 
 class TestSubmitNouvelleLigne:

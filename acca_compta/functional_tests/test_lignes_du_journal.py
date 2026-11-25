@@ -74,11 +74,16 @@ class LignesDuJournal(FunctionalTest):
         compte_selection = Select(form.find_element(By.ID, "id_compte"))
         compte_selection.select_by_visible_text("Caisse")
 
+        # La catégorie est verrouillée tant que la meta-catégorie n'est pas sélectionnée
+        categorie = form.find_element(By.ID, "id_categorie")
+        assert not categorie.is_enabled()
+
         # Sélectionne la meta-catégorie
         meta_categorie = Select(form.find_element(By.ID, "id_meta_categorie"))
         meta_categorie.select_by_visible_text("Frais généraux")
 
         # Sélectionne la catégorie
+        form = self.wait_for_element("id_form-nouvelle-ligne")
         categorie = Select(form.find_element(By.ID, "id_categorie"))
         categorie.select_by_visible_text("Frais généraux - Papeterie")
 

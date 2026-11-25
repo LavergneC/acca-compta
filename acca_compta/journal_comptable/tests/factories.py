@@ -7,12 +7,12 @@ from acca_compta.journal_comptable.models import MetaCategorie
 
 
 def create_meta_categorie(nom: str) -> MetaCategorie:
-    return MetaCategorie.objects.create(nom=nom)
+    return MetaCategorie.objects.get_or_create(nom=nom)[0]
 
 
 def create_categorie(meta_categorie: MetaCategorie | str, nom: str) -> Categorie:
     if isinstance(meta_categorie, str):
-        meta_categorie = create_meta_categorie(nom=meta_categorie)
+        meta_categorie, _ = MetaCategorie.objects.get_or_create(nom=meta_categorie)
 
     return Categorie.objects.create(meta_categorie=meta_categorie, nom=nom)
 

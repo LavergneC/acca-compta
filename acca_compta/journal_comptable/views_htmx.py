@@ -29,6 +29,17 @@ def cancel_edit_nouvelle_ligne(request) -> HttpResponse:
 
 @require_POST
 @require_htmx
+def submit_half_nouvelle_ligne(request) -> HttpResponse:
+    form = NouvelleLigneForm(initial=request.POST.dict())
+    return render(
+        request,
+        template_name="journal_comptable/components/edit_nouvelle_ligne.html",
+        context={"form": form},
+    )
+
+
+@require_POST
+@require_htmx
 def submit_nouvelle_ligne(request) -> HttpResponse:
     form = NouvelleLigneForm(data=request.POST)
     if form.is_valid() is False:
