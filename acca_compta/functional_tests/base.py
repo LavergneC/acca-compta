@@ -59,7 +59,9 @@ class FunctionalTest(StaticLiveServerTestCase):
 
     @wait
     def wait_for_page(self, page_title: str) -> None:
-        assert page_title in self.browser.title
+        assert page_title in self.browser.title, (
+            f"{self.browser.title} is not {page_title}"
+        )
 
     @wait
     def wait_for_message(self, message_content: str) -> None:

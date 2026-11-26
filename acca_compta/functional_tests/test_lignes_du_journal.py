@@ -34,7 +34,7 @@ class LignesDuJournal(FunctionalTest):
         self.browser.get(self.live_server_url)
         self.wait_for_page("ACCA Compta")
 
-        # L'utilisateur utilise le menu pour accéder à la lecture du
+        # L'utilisateur utilise le menu pour accéder à la lecture du Journal Comptable
         self.browser.find_element(By.LINK_TEXT, "Journal Comptable").click()
         self.wait_for_page("Journal comptable")
 
