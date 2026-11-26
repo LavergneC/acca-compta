@@ -3,6 +3,7 @@ import subprocess
 FUNCTIONAL_TESTS_PATHS = [
     "test_lignes_du_journal.LignesDuJournal.test_consulter_journal",
     "test_lignes_du_journal.LignesDuJournal.test_ajouter_une_recette",
+    "test_login.LoginTest.test_login",
 ]
 
 

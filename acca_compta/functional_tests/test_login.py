@@ -1,30 +1,42 @@
+import pytest
 from functional_tests.base import FunctionalTest
-from functional_tests.constants import MESSAGES
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
-from unycapp.users.tests.factories import create_user
+
+from acca_compta.users.models import User
 
 
 class LoginTest(FunctionalTest):
     def setUp(self):
-        self.user = create_user(password="testpass")  # noqa: S106
+        self.user = User.objects.create_user(
+            username="acca_bordeaux",
+            password="azerty",  # noqa: S106
+        )
         return super().setUp()
 
     def test_login(self) -> None:
-        # User goes to the login page
-        self.browser.get(self.live_server_url + "/accounts/login")
+        # User goes to the home page
+        self.browser.get(self.live_server_url)
+
+        # Pas de bouton "Journal Comptable"
+        with pytest.raises(NoSuchElementException):
+            self.browser.find_element(By.LINK_TEXT, "Journal Comptable")
+
+        self.browser.find_element(By.LINK_TEXT, "Connexion").click()
+        self.wait_for_page("Sign In")
 
         # User enters their username and password
-        self.browser.find_element(By.NAME, "login").send_keys(self.user.email)
-        self.browser.find_element(By.NAME, "password").send_keys("testpass")
+        self.browser.find_element(By.ID, "id_login").send_keys("acca_bordeaux")
+        self.browser.find_element(By.ID, "id_password").send_keys("azerty")
 
         # User clicks the login button
-        self.browser.find_element(By.XPATH, "//button[contains(.,'Connexion')]").click()
+        self.browser.find_element(By.XPATH, "//button[contains(.,'Sign In')]").click()
 
-        # User is redirected to the user detail page
-        self.wait_for_page(str(self.user.name))
+        # User is redirected to the home page
+        self.wait_for_page("ACCA Compta")
 
         # User sees login success message
-        self.wait_for_message(MESSAGES.LOGIN_SUCCESS.format(user=str(self.user)))
+        self.wait_for_message("Connection réussie")
 
-        # User is logged in
-        self._check_if_user_is_logged_in()
+        self.browser.find_element(By.LINK_TEXT, "Journal Comptable").click()
+        self.wait_for_page("Journal comptable")
