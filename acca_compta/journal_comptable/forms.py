@@ -2,15 +2,15 @@ from django import forms
 
 from acca_compta.journal_comptable.models import Categorie
 from acca_compta.journal_comptable.models import Ligne
-from acca_compta.journal_comptable.models import MetaCategorie
+from acca_compta.journal_comptable.models import SousCategorie
 
 
 class NouvelleLigneForm(forms.models.ModelForm):
-    meta_categorie = forms.ModelChoiceField(queryset=MetaCategorie.objects.all())
+    categorie = forms.ModelChoiceField(queryset=Categorie.objects.all())
 
     class Meta:
         model = Ligne
-        fields = ("date", "compte", "categorie", "montant")
+        fields = ("date", "compte", "sous_categorie", "montant")
         widgets = {
             "date": forms.DateInput(
                 format="%d/%m/%Y",
@@ -27,18 +27,18 @@ class NouvelleLigneForm(forms.models.ModelForm):
 
         kwargs_initial: dict | None = kwargs.get("initial")
         if kwargs_initial is None:
-            self.fields["categorie"].disabled = True
+            self.fields["sous_categorie"].disabled = True
             return
 
-        if "meta_categorie" not in kwargs_initial:
+        if "categorie" not in kwargs_initial:
             return
 
         if (
-            isinstance(kwargs_initial["meta_categorie"], str) is False
-            or kwargs_initial["meta_categorie"].isdigit() is False
+            isinstance(kwargs_initial["categorie"], str) is False
+            or kwargs_initial["categorie"].isdigit() is False
         ):
             return
 
-        self.fields["categorie"].queryset = Categorie.objects.filter(
-            meta_categorie=kwargs_initial["meta_categorie"],
+        self.fields["sous_categorie"].queryset = SousCategorie.objects.filter(
+            categorie=kwargs_initial["categorie"],
         )

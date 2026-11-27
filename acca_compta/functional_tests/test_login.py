@@ -23,7 +23,7 @@ class LoginTest(FunctionalTest):
         with pytest.raises(NoSuchElementException):
             self.browser.find_element(By.LINK_TEXT, "Journal Comptable")
 
-        self.browser.find_element(By.LINK_TEXT, "Connexion").click()
+        self.browser.find_element(By.LINK_TEXT, "S'identifier").click()
         self.wait_for_page("S'identifier")
 
         # User enters their username and password

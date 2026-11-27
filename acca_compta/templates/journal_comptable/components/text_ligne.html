@@ -1,7 +1,7 @@
 <tr id="id_ligne_{{ ligne.pk }}">
   <td id="id_date_{{ ligne.pk }}">{{ ligne.date|date:"d/m/Y" }}</td>
   <td id="id_compte_{{ ligne.pk }}">{{ ligne.compte }}</td>
-  <td id="id_categorie_{{ ligne.pk }}">{{ ligne.categorie }}</td>
+  <td id="id_categorie_{{ ligne.pk }}">{{ ligne.sous_categorie }}</td>
   <td id="id_montant_{{ ligne.pk }}"
       class="text-end">{% if ligne.montant > 0 %}+{% endif %}{{ ligne.montant|floatformat:2 }} €</td>
   <td></td>

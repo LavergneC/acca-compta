@@ -5,9 +5,9 @@ import pytest
 from django.urls import reverse
 
 from acca_compta.journal_comptable.models import Ligne
-from acca_compta.journal_comptable.tests.factories import create_categorie
 from acca_compta.journal_comptable.tests.factories import create_compte
 from acca_compta.journal_comptable.tests.factories import create_ligne
+from acca_compta.journal_comptable.tests.factories import create_sous_categorie
 
 pytestmark = pytest.mark.django_db
 
@@ -23,13 +23,13 @@ class TestConsulterJournalView:
             create_ligne(
                 date=dt.date(year=2025, month=7, day=4),
                 compte=create_compte(nom="Banque"),
-                categorie=create_categorie(meta_categorie="Frais", nom="Assurance"),
+                sous_categorie=create_sous_categorie("Frais", "Assurance"),
                 montant=-12.45,
             ),
             create_ligne(
                 date=dt.date(year=2025, month=7, day=1),
                 compte=create_compte(nom="Caisse"),
-                categorie=create_categorie(meta_categorie="Cartes", nom="Extérieur"),
+                sous_categorie=create_sous_categorie("Cartes", "Extérieur"),
                 montant=23400.00,
             ),
         ]
@@ -84,7 +84,7 @@ class TestConsulterJournalView:
         for ligne in lignes:
             assert ligne.date.strftime("%d/%m/%Y") in response.content.decode("utf-8")
             assert str(ligne.compte) in response.content.decode("utf-8")
-            assert str(ligne.categorie) in response.content.decode("utf-8")
+            assert str(ligne.sous_categorie) in response.content.decode("utf-8")
             assert str(ligne.montant) in response.content.decode("utf-8")
 
     def test_affichage_d_un_signe_plus_devant_les_montants_positif(

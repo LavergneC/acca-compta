@@ -5,9 +5,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
 
 from acca_compta.journal_comptable.models import Ligne
-from acca_compta.journal_comptable.tests.factories import create_categorie
 from acca_compta.journal_comptable.tests.factories import create_compte
 from acca_compta.journal_comptable.tests.factories import create_ligne
+from acca_compta.journal_comptable.tests.factories import create_sous_categorie
 
 
 class LignesDuJournal(FunctionalTest):
@@ -18,16 +18,16 @@ class LignesDuJournal(FunctionalTest):
         create_ligne(
             date=dt.date(year=2025, month=7, day=4),
             compte=create_compte(nom="Banque"),
-            categorie=create_categorie(meta_categorie="Grand gibier", nom="chevreuil"),
+            sous_categorie=create_sous_categorie("Grand gibier", "chevreuil"),
             montant=-258.54,
         )
         create_ligne(
             date=dt.date(year=2025, month=7, day=1),
             compte=create_compte(nom="Livret A"),
-            categorie=create_categorie(meta_categorie="Intérêts", nom="Livret A"),
+            sous_categorie=create_sous_categorie("Intérêts", "Livret A"),
             montant=260.00,
         )
-        create_categorie(meta_categorie="Frais généraux", nom="Papeterie")
+        create_sous_categorie(categorie="Frais généraux", nom="Papeterie")
         create_compte("Caisse")
 
     def test_consulter_journal(self):
@@ -74,17 +74,18 @@ class LignesDuJournal(FunctionalTest):
         compte_selection = Select(form.find_element(By.ID, "id_compte"))
         compte_selection.select_by_visible_text("Caisse")
 
-        # La catégorie est verrouillée tant que la meta-catégorie n'est pas sélectionnée
-        categorie = form.find_element(By.ID, "id_categorie")
-        assert not categorie.is_enabled()
+        # La sous catégorie est verrouillée tant que la meta-catégorie n'est pas
+        # sélectionnée
+        sous_categorie = form.find_element(By.ID, "id_sous_categorie")
+        assert not sous_categorie.is_enabled()
 
         # Sélectionne la meta-catégorie
-        meta_categorie = Select(form.find_element(By.ID, "id_meta_categorie"))
-        meta_categorie.select_by_visible_text("Frais généraux")
+        categorie = Select(form.find_element(By.ID, "id_categorie"))
+        categorie.select_by_visible_text("Frais généraux")
 
         # Sélectionne la catégorie
         form = self.wait_for_element("id_form-nouvelle-ligne")
-        categorie = Select(form.find_element(By.ID, "id_categorie"))
+        categorie = Select(form.find_element(By.ID, "id_sous_categorie"))
         categorie.select_by_visible_text("Frais généraux - Papeterie")
 
         # Sélectionne la date

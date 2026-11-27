@@ -7,9 +7,9 @@ from django.urls import reverse
 
 from acca_compta.journal_comptable.forms import NouvelleLigneForm
 from acca_compta.journal_comptable.models import Ligne
-from acca_compta.journal_comptable.tests.factories import create_categorie
 from acca_compta.journal_comptable.tests.factories import create_compte
 from acca_compta.journal_comptable.tests.factories import create_ligne
+from acca_compta.journal_comptable.tests.factories import create_sous_categorie
 from acca_compta.test_utils import HtmxClient
 
 pytestmark = pytest.mark.django_db
@@ -120,13 +120,13 @@ class TestHalfSubmitNouvelleLigne:
 
     @pytest.fixture
     def half_data(self) -> dict:
-        self.categorie = create_categorie("Achat", "Cartouche d'encre")
+        self.categorie = create_sous_categorie("Achat", "Cartouche d'encre")
         self.compte = create_compte("Courant")
 
         return {
             "date": "2026-11-17",
             "compte": self.compte.pk,
-            "meta_categorie": self.categorie.meta_categorie.pk,
+            "categorie": self.categorie.categorie.pk,
             "montant": -123.45,
         }
 
@@ -160,8 +160,8 @@ class TestHalfSubmitNouvelleLigne:
         ]
         assert response.context["form"]["compte"].value() == str(self.compte.pk)
         assert response.context["form"]["date"].value() == "2026-11-17"
-        assert response.context["form"]["meta_categorie"].value() == str(
-            self.categorie.meta_categorie.pk,
+        assert response.context["form"]["categorie"].value() == str(
+            self.categorie.categorie.pk,
         )
 
         assert response.context["form"]["montant"].value() == "-123.45"
@@ -178,14 +178,14 @@ class TestSubmitNouvelleLigne:
 
     @pytest.fixture
     def data(self) -> dict:
-        categorie = create_categorie("Achat", "Cartouche d'encre")
+        sous_categorie = create_sous_categorie("Achat", "Cartouche d'encre")
         self.compte = create_compte("Courant")
 
         return {
             "date": "2026-11-17",
             "compte": self.compte.pk,
-            "meta_categorie": categorie.meta_categorie.pk,
-            "categorie": categorie.pk,
+            "categorie": sous_categorie.categorie.pk,
+            "sous_categorie": sous_categorie.pk,
             "montant": "123.11",
         }
 
@@ -220,7 +220,7 @@ class TestSubmitNouvelleLigne:
         assert new_ligne is not None
         assert new_ligne.date == dt.date(year=2026, month=11, day=17)
         assert new_ligne.compte.pk == data["compte"]
-        assert new_ligne.categorie.pk == data["categorie"]
+        assert new_ligne.sous_categorie.pk == data["sous_categorie"]
         assert new_ligne.montant == float(data["montant"])
 
     def test_post_redirect_to_text_htmx_view_on_success_with_message(
@@ -271,7 +271,7 @@ class TestTextLigne:
         self.ligne = create_ligne(
             date=dt.date(year=2024, month=7, day=4),
             compte=create_compte(nom="Super Banque"),
-            categorie=create_categorie(meta_categorie="Gibier", nom="Escargot"),
+            sous_categorie=create_sous_categorie("Gibier", "Escargot"),
             montant=-1,
         )
         return reverse("journal_comptable:text_ligne", kwargs={"pk": self.ligne.pk})
