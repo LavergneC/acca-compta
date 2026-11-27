@@ -8,7 +8,7 @@ from acca_compta.users.models import User
 
 
 class UserFactory(DjangoModelFactory[User]):
-    email = Faker("email")
+    username = Faker("name")
     name = Faker("name")
 
     @post_generation
@@ -31,5 +31,5 @@ class UserFactory(DjangoModelFactory[User]):
 
     class Meta:
         model = User
-        django_get_or_create = ["email"]
+        django_get_or_create = ["username"]
         skip_postgeneration_save = True

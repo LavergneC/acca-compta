@@ -10,25 +10,39 @@ if TYPE_CHECKING:
 class UserManager(DjangoUserManager["User"]):
     """Custom manager for the User model."""
 
-    def _create_user(self, email: str, password: str | None, **extra_fields):
+    def _create_user(
+        self,
+        username: str | None,
+        password: str | None,
+        **extra_fields,
+    ):
         """
-        Create and save a user with the given email and password.
+        Create and save a user with the given username and password.
         """
-        if not email:
-            msg = "The given email must be set"
+        if not username:
+            msg = "The given username must be set"
             raise ValueError(msg)
-        email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
+        user = self.model(username=username, **extra_fields)
         user.password = make_password(password)
         user.save(using=self._db)
         return user
 
-    def create_user(self, email: str, password: str | None = None, **extra_fields):  # type: ignore[override]
+    def create_user(  # pyright: ignore[reportIncompatibleMethodOverride]
+        self,
+        username: str,
+        password: str | None = None,
+        **extra_fields,
+    ):
         extra_fields.setdefault("is_staff", False)
         extra_fields.setdefault("is_superuser", False)
-        return self._create_user(email, password, **extra_fields)
+        return self._create_user(username, password, **extra_fields)
 
-    def create_superuser(self, email: str, password: str | None = None, **extra_fields):  # type: ignore[override]
+    def create_superuser(  # pyright: ignore[reportIncompatibleMethodOverride]
+        self,
+        username: str | None = None,
+        password: str | None = None,
+        **extra_fields,
+    ):
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
 
@@ -39,4 +53,4 @@ class UserManager(DjangoUserManager["User"]):
             msg = "Superuser must have is_superuser=True."
             raise ValueError(msg)
 
-        return self._create_user(email, password, **extra_fields)
+        return self._create_user(username, password, **extra_fields)
