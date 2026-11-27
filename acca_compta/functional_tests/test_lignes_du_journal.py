@@ -13,6 +13,7 @@ from acca_compta.journal_comptable.tests.factories import create_ligne
 class LignesDuJournal(FunctionalTest):
     def setUp(self) -> None:
         super().setUp()
+        self.login()
 
         create_ligne(
             date=dt.date(year=2025, month=7, day=4),
@@ -46,7 +47,7 @@ class LignesDuJournal(FunctionalTest):
             ligne1.find_element(By.ID, "id_categorie_1").text
             == "Grand gibier - chevreuil"
         )
-        assert ligne1.find_element(By.ID, "id_montant_1").text == "-258.54 €"
+        assert ligne1.find_element(By.ID, "id_montant_1").text == "-258,54 €"
 
         ligne2 = self.browser.find_element(By.ID, "id_ligne_2")
         assert ligne2.find_element(By.ID, "id_date_2").text == "01/07/2025"
@@ -54,7 +55,7 @@ class LignesDuJournal(FunctionalTest):
         assert (
             ligne2.find_element(By.ID, "id_categorie_2").text == "Intérêts - Livret A"
         )
-        assert ligne2.find_element(By.ID, "id_montant_2").text == "+260.00 €"
+        assert ligne2.find_element(By.ID, "id_montant_2").text == "+260,00 €"
 
     def test_ajouter_une_recette(self):
         # Depuis la page de garde
@@ -116,4 +117,4 @@ class LignesDuJournal(FunctionalTest):
             ligne1.find_element(By.ID, f"id_categorie_{new_id}").text
             == "Frais généraux - Papeterie"
         )
-        assert ligne1.find_element(By.ID, f"id_montant_{new_id}").text == "-10.50 €"
+        assert ligne1.find_element(By.ID, f"id_montant_{new_id}").text == "-10,50 €"

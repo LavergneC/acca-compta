@@ -50,7 +50,29 @@ class FunctionalTest(StaticLiveServerTestCase):
         super().setUpClass()
         driver_path = "/snap/bin/geckodriver"
         driver_service = webdriver.FirefoxService(executable_path=driver_path)
-        cls.browser = webdriver.Firefox(service=driver_service)
+
+        options = webdriver.FirefoxOptions()
+        options.set_preference("intl.accept_languages", "fr-FR,fr")
+
+        cls.browser = webdriver.Firefox(service=driver_service, options=options)
+
+    @classmethod
+    def login(cls) -> None:
+        cls.client = Client()
+        cls.user = User.objects.create_user(  # pyright: ignore[reportAttributeAccessIssue]
+            username="Jean",
+            password="testpassword",  # noqa: S106
+        )
+        cls.client.login(username=cls.user.username, password="testpassword")  # noqa: S106
+        cookie = cls.client.cookies[COOKIE.NAME]
+        cls.browser.get(cls.live_server_url + "/fake-path")
+        cls.browser.add_cookie(
+            {
+                COOKIE.NAME_ATTRIBUTE: COOKIE.NAME,
+                COOKIE.VALUE_ATTRIBUTE: cookie.value,
+                COOKIE.PATH_ATTRIBUTE: COOKIE.PATH,
+            },
+        )
 
     @classmethod
     def tearDownClass(cls) -> None:
